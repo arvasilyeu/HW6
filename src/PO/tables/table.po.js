@@ -1,6 +1,7 @@
 class Table {
     constructor() {
-        this.table = $('.table-responsive');
+        // this.table = $('.table-responsive');
+        this.table = $('#table');
         this.headersSelector = '.tabulator-col-title';
         this.cellSelector = '.tabulator-cell';
         this.rowSelector = '.tabulator-row';
@@ -23,8 +24,9 @@ class Table {
                 const cells = await row.$$(this.cellSelector);
                 let index = 0;
                 for (const cell of cells) {
-                    console.log(await cell.getText());
-                    result[(await this.headers())[index].name] = await cell;
+                    // console.log(await cell.getText());
+                    // result[(await this.headers())[index].name] = await cell;
+                    result[(await this.headers())[index].name] = (await cell.getText()).trim();
                     index += 1;
                 }
                 return result;

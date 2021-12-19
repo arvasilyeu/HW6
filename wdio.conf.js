@@ -61,7 +61,7 @@ const localCaps = [{
 }]
 
 const bsServices = ['browserstack'];
-const localServices = ['chromedriver'];
+const localServices = ['chromedriver', 'shared-store'];
 exports.config = {
     user: process.env.USER,
     key: process.env.KEY,
@@ -147,8 +147,19 @@ exports.config = {
      * @param {Object} config wdio configuration object
      * @param {Array.<Object>} capabilities list of capabilities details
      */
-    // onPrepare: function (config, capabilities) {
-    // },
+    onPrepare: function (config, capabilities) {
+        const fs = require('fs');
+        const path = require('path');
+        const directory = 'screenshots';
+        fs.readdir(directory, (err, files) => {
+            if (err) throw err;
+            for (const file of files) {
+                fs.unlink(path.join(directory, file), err => {
+                    if (err) throw err;
+                });
+            }
+        });
+    },
     /**
      * Gets executed before a worker process is spawned and can be used to initialise specific service
      * for that worker as well as modify runtime environments in an async fashion.
@@ -222,12 +233,12 @@ exports.config = {
         // console.log({ scenario });
         // console.log({ context });
         if (step.keyword !== undefined) {
-            const content = {
-                content: '123',
-                name: 'name'
-            };
-            let status = result.passed ? 'passed' : 'failed';
-            addStep(step.keyword.toUpperCase() + step.text, content, status);
+            // const content = {
+            //     content: '123',
+            //     name: 'name'
+            // };
+            // let status = result.passed ? 'passed' : 'failed';
+            // addStep(step.keyword.toUpperCase() + step.text, content, status);
         }
     },
 
@@ -251,16 +262,14 @@ exports.config = {
         if (world.result.status === 'SKIPPED') {
             world.result.status = 'FAILED'
         }
+        console.log('isPassed: ' + result.passed)
         console.log({result})
-        console.log(result.passed)
-        console.log(result.passed)
-        console.log(result.passed)
-        addDescription('TESTTESTTEST!!! <script>alert(123)</script>')
-
         if (!result.passed) {
-            addDescription('TESTTESTTEST!!!<img src="https://s.keepmeme.com/files/en_posts/20200908/blurred-surprised-cat-meme-5b734a45210ef3b6657bcbe2831715fa.jpg">')
+            addAttachment('Cookies', JSON.stringify(await browser.getAllCookies()), 'text/plain');
+            addAttachment('HTML', await $('html').getHTML(), 'text/html');
+            const dateString = (new Date()).toLocaleString().replace(/[^0-9]+/g, "_");
+            await browser.saveScreenshot(`./screenshots/failed_test_${dateString}.png`);
         }
-        // await browser.reloadSession();
     },
 
     /**
