@@ -1,6 +1,5 @@
 class Table {
     constructor() {
-        // this.table = $('.table-responsive');
         this.table = $('#table');
         this.headersSelector = '.tabulator-col-title';
         this.cellSelector = '.tabulator-cell';
@@ -24,8 +23,6 @@ class Table {
                 const cells = await row.$$(this.cellSelector);
                 let index = 0;
                 for (const cell of cells) {
-                    // console.log(await cell.getText());
-                    // result[(await this.headers())[index].name] = await cell;
                     result[(await this.headers())[index].name] = (await cell.getText()).trim();
                     index += 1;
                 }
@@ -36,4 +33,4 @@ class Table {
     }
 }
 
-module.exports = { Table: new Table() };
+module.exports = { Table: new Table(), TableClass: Table };

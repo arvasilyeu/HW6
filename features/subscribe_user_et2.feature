@@ -4,15 +4,17 @@ Feature: Subscription
         When I go to "https://viktor-silakov.github.io/course-sut/index.html?quick"
         When I login as: "walker@jw.com", "password"
 
-    Scenario Outline: Create user "<email>"
+    Scenario Outline: Create user "<email>" and check
         When I go to "Create User" menu item
         And I create user with fields "<email>", "<password>", "<address1>", "<address2>", "<city>", "<zip>", "<anual>", "<description>"
+        And I go to "List of users" menu item
+        Then I check user "<email>", "<role>", "<address1>", "<address2>", "<city>", "<zip>", "<anual>", "<description>"
         And I logout
         Examples:
-            | email           | password   | address1     | address2 | city    | zip    | anual | description      |
-            | first@test.com  | U&cmpYsxK9 | Rustaveli 20 | 21       | Tbilisi | 222567 | 100   | first test user  |
-            | second@test.com | YsxK9U&cmp | Pushkina 17  | 4        | Minsk   | 222567 | 200   | second test user |
-            | third@test.com  | U&xK9cmpYs | Arbat 17     | 5        | Moskow  | 222567 | 300   | third test user  |
+            | email           | role | password   | address1     | address2 | city    | zip    | anual | description      |
+            | first@test.com  | user | U&cmpYsxK9 | Rustaveli 20 | 21       | Tbilisi | 222567 | 100   | first test user  |
+            | second@test.com | user | YsxK9U&cmp | Pushkina 17  | 4        | Minsk   | 222567 | 200   | second test user |
+            | third@test.com  | user | U&xK9cmpYs | Arbat 17     | 5        | Moskow  | 222567 | 300   | third test user  |
 
     Scenario Outline: Subscribe user "<user>" and check
         When I go to "Create Subscription" menu item

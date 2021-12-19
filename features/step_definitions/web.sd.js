@@ -8,6 +8,7 @@ const { Subscription } = require("../../src/PO/subscription.po");
 const { CustomPage } = require("../../src/PO/custom_page.po");
 const { CustomPage2 } = require("../../src/PO/custom_page_2.po");
 const { Table } = require("../../src/PO/tables/table.po");
+const { UserTable } = require("../../src/PO/tables/user_table.po");
 const Subscribe = require('../../src/PO/forms/subscribe.model');
 const { addDescription, addAttachment } = require('@wdio/allure-reporter').default;
 
@@ -49,7 +50,6 @@ When('I create user with fields {string}, {string}, {string}, {string}, {string}
         'description': description
     }
     await User.create(user);
-
     await browser.sharedStore.set(user.email, user)
 });
 
@@ -68,6 +68,22 @@ When('I Create subscription with fields {string}, {string}, {string}, {string}, 
     }
     await Subscription.create(newPlan);
     addDescription('User data: ' + JSON.stringify(await browser.sharedStore.get(newPlan.user)))
+});
+
+Then('I check user {string}, {string}, {string}, {string}, {string}, {string}, {string}, {string}', 
+        async function (email, role, address1, address2, city, zip, anual, description) {
+        const user = {
+            'Email': email,
+            'Role': role,
+            'Address 1': address1,
+            'Address 2': address2,
+            'City': city,
+            'Zip': zip,
+            'Description': description,
+            'Anual':  anual
+        }
+        const formUser = await UserTable.userData(user)
+        expect(user).toEqual(formUser)
 });
 
 Then('I check subscription {string}, {string}, {string}, {string}, {string}, {string}', 
